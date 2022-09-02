@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import axios from 'axios'
 // Axios' method get returns a promise.
 // The documentation on Mozilla's site states the following about promises:
 // A Promise is an object representing the eventual completion or failure 
@@ -16,10 +15,6 @@ import axios from 'axios'
 // The promise is rejected: It means that an error prevented the final value from
 // 		being determined, which generally represents a failed operation.
 
-axios
-	.get('http://localhost:3001/notes')
-	.then(response => {
-		const notes = response.data
-		console.log(notes)
-		ReactDOM.createRoot(document.getElementById('root')).render(<App notes={notes} />)
-	})
+
+// npx json-server --port 3001 --watch db.json run command on root of app to run the server on desired port
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)

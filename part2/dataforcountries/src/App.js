@@ -1,7 +1,27 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect} from 'react'
+import axios from 'axios'
 
 const CountryCard = ({country}) => {
-	let languages = Object.values(country[0].languages).map((x) => <li>{x}</li>)
+
+	const lat = country[0].latlng[0]
+	const lon = country[0].latlng[1]
+	const languages = Object.values(country[0].languages).map((x, i) => <li key={i}>{x}</li>)
+	// const [weather, setWeather] = useState([]);
+	const KEY = process.env.REACT_APP_API_KEY
+
+	useEffect(() => {
+		try {
+			axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${KEY}`)
+			.then(response => {
+				console.log(response.data.weather[0]);
+				console.log('waw');
+			})
+		} catch (error) {
+			console.log(error);
+		}
+	}, [])
+	
+
 	return(
 		<div>
 			<h1>{country[0].name.common}</h1>
@@ -11,6 +31,7 @@ const CountryCard = ({country}) => {
 			<ul>{languages}</ul>
 			<br></br>
 			<img src={country[0].flags.png} alt={country[0].name.common}/>
+			<h3>Weather</h3>
 		</div>
 	)
 }
@@ -22,7 +43,7 @@ const CountryName = ({name, handleClick}) => {
 }
 
 const ListCountries = ({list, handleClick}) => {
-	console.log('list', list.length)
+
 	if (list.length === 1) {
 		return <CountryCard country={list}/>
 	} else if (list.length > 10) {
