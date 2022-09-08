@@ -6,6 +6,8 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "nodemon index.js",
+		"build:ui": "../../phonebook/npm run build",
+		"buildndcopy": "npm run build:ui && cp -r ./build ../part3/phonebook_backend",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Amedeo Majer",
