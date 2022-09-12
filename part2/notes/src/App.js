@@ -14,6 +14,7 @@ const App = () => {
 		noteService
 			.getAll()
 			.then(response => {
+				console.log(response);
 				setNotes(response.data)
 			})
 	}, [])
@@ -49,7 +50,7 @@ const App = () => {
 			setImportance(false);
 		
 	}
-
+	console.log(notesToShow);
 	return (
 		<div>
 			<h1>Notes</h1>
@@ -59,9 +60,11 @@ const App = () => {
 				</button>
 			</div>
 			<ul>
-				{notesToShow.map(note => 
-					<Note key={note.id} note={note} setNotes={setNotes} setNewNote={setNewNote} notes={notes}/>
-				)}
+				{
+					notesToShow.map(note => {
+						return <Note key={note.id} note={note} setNotes={setNotes} setNewNote={setNewNote} notes={notes} /> 
+					})
+				}
 			</ul>
 			<form onSubmit={addNote}>
 				<input onChange={handleNoteChange} value={newNote}/>

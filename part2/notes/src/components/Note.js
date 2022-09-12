@@ -1,9 +1,8 @@
-import axios from 'axios'
+import noteService from '../services/notes.js'
 
-const Note = ({ note, setNotes, setNewNote, notes }) => {
+const Note = ({ note, setNotes, setNewNote, notes}) => {
 	const removeNote = (id) => {
-		axios
-		.delete(`http://localhost:3001/notes/${id}`)
+		noteService.deleteNote()
 		.then(response => {
 			console.log(response)
 			setNotes(notes.filter(x => x.id !== id))
@@ -14,7 +13,6 @@ const Note = ({ note, setNotes, setNewNote, notes }) => {
 	return (
 		<li key={note.id}>
 			{note.content}
-			<button key={note.id} onClick={()=>removeNote(note.id)}>X</button>
 		</li>
 	)
 }
