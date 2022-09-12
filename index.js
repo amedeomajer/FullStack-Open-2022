@@ -1,7 +1,11 @@
+require('dotenv').config();
 const { response }	= require('express');
 const express		= require('express');
 const app			= express();
 const cors			= require('cors');
+const Number 		= require('./models/number')
+
+let numbers = [];
 
 
 
@@ -13,33 +17,10 @@ const requestLogger = (request, response, next) => {
 	next()
 }
 
-app.use(cors());
-app.use(express.static('build'));
 app.use(express.json());
 app.use(requestLogger);
-
-let numbers = [
-	{
-		"id": 1,
-		"name": "Arto Hellas", 
-		"number": "040-123456"
-	},
-	{
-		"id": 2,
-		"name": "Ada Lovelace", 
-		"number": "39-44-5323523"
-	},
-	{
-		"id": 3,
-		"name": "Dan Abramov", 
-		"number": "12-43-234345"
-	},
-	{ 
-		"id": 4,
-		"name": "Mary Poppendieck", 
-		"number": "39-23-6423122"
-	}
-]
+app.use(cors());
+app.use(express.static('build'));
 
 app.get('/', (request, response) => {
 	response.send('<h1>Phonebukkake API MF!</h1>')
@@ -52,16 +33,26 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/numbers', (request, response) => {
-	response.json(numbers)
+	Number.find({}).then(numbers => {
+		response.json(numbers)
+	})
 })
 
 app.get('/api/numbers/:id', (request, response) => {
-	const id = Number(request.params.id);
-	const number = numbers.find(number => number.id === id);
-	if (number)
-		response.json(number);
-	else
-		response.status(404).end();
+	Number.findById(request.params.id)
+		.then(number => {
+			if (number){
+				response.json(number);
+				console.log(number)
+			}
+			else{
+				response.status(404).end();
+			}
+		})
+		.catch(error => {
+			console.log(error);
+			response.status(400).send({ error: 'malformatted id' }).end()
+		})
 })
 
 app.delete('/api/numbers/:id', (request, response) => {
@@ -76,7 +67,7 @@ app.delete('/api/numbers/:id', (request, response) => {
 })
 
 app.post('/api/numbers', (request, response) => {
-	const id = Math.floor(Math.random() * 10000);
+	const body = request.body;
 
 	const duplicateName = numbers.find(number => number.name === request.body.name);
 	if (!request.body.name || request.body.name === "") {
@@ -95,13 +86,15 @@ app.post('/api/numbers', (request, response) => {
 		})
 	}
 
-	const number = {
-		"id": id,
-		"name": request.body.name,
-		"number": request.body.number
-	}
-	numbers = numbers.concat(number);
-	response.json(number);
+	const number = new Number({
+		number: body.number,
+		name: body.name,
+		date: new Date(),
+	})
+
+	number.save().then((savedNumber) => {
+		response.json(savedNumber)
+	})
 })
 
 const unknownEndPoint = (request, response) => {
