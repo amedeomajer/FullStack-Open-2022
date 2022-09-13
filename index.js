@@ -56,14 +56,19 @@ app.get('/api/numbers/:id', (request, response) => {
 })
 
 app.delete('/api/numbers/:id', (request, response) => {
-	const id = Number(request.params.id);
-	const number = numbers.find(number => number.id === id);
-	if (number) {
-		numbers = numbers.filter(number => number.id !== id);
-		response.status(204).end();
-	} else {
-		response.status(404).end();
-	}
+	console.log()
+	Number.findByIdAndRemove(request.params.id)
+	.then(result => {
+		response.status(204).end()
+	})
+	.catch(error => console.log(error));
+	// const number = numbers.find(number => number.id === id);
+	// if (number) {
+	// 	numbers = numbers.filter(number => number.id !== id);
+	// 	response.status(204).end();
+	// } else {
+	// 	response.status(404).end();
+	// }
 })
 
 app.post('/api/numbers', (request, response) => {
